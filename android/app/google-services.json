@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1008372970148",
+    "project_id": "ledger-7b0bf",
+    "storage_bucket": "ledger-7b0bf.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1008372970148:android:eebd9f71398682751a6c31",
+        "android_client_info": {
+          "package_name": "com.ledger.expensetracker"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCTttRDcwfsG_xnXFOCYlQBM9eTSyd2UTU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
