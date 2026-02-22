@@ -2,7 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:ledger/FrontEnd/Onboarding/OnboardingCurrency.dart';
 
 class OnboardingName extends StatefulWidget {
-  const OnboardingName({super.key});
+  final String uid;
+  final String email;
+  final String pin;
+  const OnboardingName({
+    super.key,
+    required this.uid,
+    required this.email,
+    required this.pin,
+  });
 
   @override
   State<OnboardingName> createState() => _OnboardingNameState();
@@ -28,7 +36,14 @@ class _OnboardingNameState extends State<OnboardingName> {
 
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (_) => const OnboardingCurrency()),
+      MaterialPageRoute(
+        builder: (_) => OnboardingCurrency(
+          uid: widget.uid,
+          email: widget.email,
+          pin: widget.pin,
+          name: _nameController.text,
+        ),
+      ),
     );
   }
 

@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:ledger/FrontEnd/Auth/AccessSetupPage.dart';
 import 'package:ledger/FrontEnd/Auth/LoginPage.dart';
-import 'package:ledger/FrontEnd/Onboarding/OnboardingName.dart';
 import 'package:page_transition/page_transition.dart';
 
 class SignupPage extends StatefulWidget {
@@ -46,7 +46,7 @@ class _SignupPageState extends State<SignupPage> {
 
   // ---------------- EMAIL VERIFICATION CHECK ----------------
 
-  void startEmailVerificationCheck() {
+  void startEmailVerificationCheck(String uid) {
     _emailCheckTimer = Timer.periodic(const Duration(seconds: 3), (
       timer,
     ) async {
@@ -60,7 +60,10 @@ class _SignupPageState extends State<SignupPage> {
 
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (_) => const OnboardingName()),
+          MaterialPageRoute(
+            builder: (_) =>
+                AccessSetupPage(email: _emailController.text.trim(), uid: uid),
+          ),
         );
       }
     });
@@ -96,7 +99,7 @@ class _SignupPageState extends State<SignupPage> {
       show("Verification email sent. Please verify.");
 
       // start auto-check
-      startEmailVerificationCheck();
+      startEmailVerificationCheck(userCred.user!.uid);
     } on FirebaseAuthException catch (e) {
       show(e.message ?? "Signup failed");
     } finally {
@@ -105,7 +108,6 @@ class _SignupPageState extends State<SignupPage> {
   }
 
   // ---------------- GOOGLE SIGN-IN ----------------
-
   Future<void> signInWithGoogle() async {
     try {
       setState(() => _loading = true);
@@ -118,18 +120,34 @@ class _SignupPageState extends State<SignupPage> {
       final GoogleSignInAuthentication googleAuth =
           await googleUser.authentication;
 
-      final credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth.idToken,
+      final OAuthCredential credential = GoogleAuthProvider.credential(
         idToken: googleAuth.idToken,
+        accessToken: googleAuth.idToken,
       );
 
-      await _auth.signInWithCredential(credential);
+      // Sign in to Firebase
+      final UserCredential userCredential = await _auth.signInWithCredential(
+        credential,
+      );
 
+      final user = userCredential.user;
+
+      if (user == null) {
+        throw Exception('User is null after Google sign-in');
+      }
+
+      final String uid = user.uid;
+      final String email = user.email ?? '';
+
+      /// Navigate
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (_) => const OnboardingName()),
+        MaterialPageRoute(
+          builder: (_) => AccessSetupPage(uid: uid, email: email),
+        ),
       );
     } catch (e) {
+      debugPrint('Google Sign-In error: $e');
       show("Google Sign-In failed");
     } finally {
       setState(() => _loading = false);
@@ -166,6 +184,7 @@ class _SignupPageState extends State<SignupPage> {
                 border: OutlineInputBorder(),
               ),
             ),
+
             const SizedBox(height: 16),
 
             TextField(
@@ -176,6 +195,7 @@ class _SignupPageState extends State<SignupPage> {
                 border: OutlineInputBorder(),
               ),
             ),
+
             const SizedBox(height: 24),
 
             ElevatedButton(

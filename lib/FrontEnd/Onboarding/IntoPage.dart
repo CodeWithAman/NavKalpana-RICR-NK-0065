@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:ledger/FrontEnd/Auth/SignupPage.dart';
 import 'package:page_transition/page_transition.dart';
 
@@ -20,14 +19,7 @@ class _IntroPageState extends State<IntroPage> {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              'Intro Page',
-              style: TextStyle(
-                fontFamily: GoogleFonts.manrope.toString(),
-                fontSize: 24.sp,
-                fontWeight: FontWeight.w400,
-              ),
-            ),
+            Text('Intro Page'),
             SizedBox(height: 12.h),
             ElevatedButton(
               onPressed: () {
