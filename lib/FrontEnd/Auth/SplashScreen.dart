@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:ledger/FrontEnd/Home/HomePage.dart';
+import 'package:ledger/FrontEnd/Auth/AccessVerificationPage.dart';
 import 'package:ledger/FrontEnd/Onboarding/IntoPage.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -36,10 +36,10 @@ class _SplashscreenState extends State<Splashscreen> {
 
     final user = FirebaseAuth.instance.currentUser;
     final prefs = await SharedPreferences.getInstance();
-    final savedEmail = prefs.getString('email');
+    final savedEmail = prefs.getString('uid');
 
     if (user != null && savedEmail != null && savedEmail.isNotEmpty) {
-      _navigateTo(const HomePage());
+      _navigateTo(const AccessVerificationPage());
     } else {
       _navigateTo(const IntroPage());
     }
