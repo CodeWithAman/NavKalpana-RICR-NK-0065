@@ -1,8 +1,9 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:ledger/Onboarding/SplashScreen.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:ledger/FrontEnd/Home/HomePage.dart';
+import 'package:ledger/FrontEnd/Auth/SplashScreen.dart';
 import 'package:ledger/firebase_options.dart';
 
 Future<void> main() async {
@@ -26,9 +27,13 @@ class MyApp extends StatelessWidget {
           splashColor: Colors.transparent,
           highlightColor: Colors.transparent,
           useMaterial3: true,
+          textTheme: GoogleFonts.manropeTextTheme(),
         ),
-        initialRoute: "/splashScreen",
-        routes: {"/splashScreen": (context) => const Splashscreen()},
+        initialRoute: "/SplashScreen",
+        routes: {
+          "/SplashScreen": (context) => const Splashscreen(),
+          "/HomePage": (context) => const HomePage(),
+        },
       ),
     );
   }

@@ -12,7 +12,20 @@
           "package_name": "com.ledger.expensetracker"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "1008372970148-g4phqr28rppl50fg0ilgdvv7sdto7s9i.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ledger.expensetracker",
+            "certificate_hash": "49d47c02104ba6fca946a203168623dec42f7e98"
+          }
+        },
+        {
+          "client_id": "1008372970148-7ca77sbllnbkdbgp7mkm95l8jajddlei.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCTttRDcwfsG_xnXFOCYlQBM9eTSyd2UTU"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1008372970148-7ca77sbllnbkdbgp7mkm95l8jajddlei.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
