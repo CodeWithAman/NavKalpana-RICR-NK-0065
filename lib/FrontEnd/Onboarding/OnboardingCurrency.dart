@@ -29,7 +29,6 @@ class _OnboardingCurrencyState extends State<OnboardingCurrency> {
 
   bool _loading = false;
 
-  /// 🔥 NEXT ACTION
   Future<void> _onNext() async {
     setState(() => _loading = true);
 
@@ -45,16 +44,14 @@ class _OnboardingCurrencyState extends State<OnboardingCurrency> {
 
       /// Save to SharedPreferences
       final prefs = await SharedPreferences.getInstance();
-      await prefs.setString('email', widget.email);
+      await prefs.setString('uid', widget.uid);
       await prefs.setString('pinHash', widget.pin);
 
       ///  Navigate
       if (!mounted) return;
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(
-          builder: (_) => const WelcomePage(), // next page
-        ),
+        MaterialPageRoute(builder: (_) => const WelcomePage()),
       );
     } catch (e) {
       if (!mounted) return;
@@ -77,7 +74,6 @@ class _OnboardingCurrencyState extends State<OnboardingCurrency> {
     return Scaffold(
       body: Stack(
         children: [
-          /// MAIN UI
           Container(
             decoration: const BoxDecoration(
               gradient: LinearGradient(
@@ -193,7 +189,7 @@ class _OnboardingCurrencyState extends State<OnboardingCurrency> {
             ),
           ),
 
-          /// 🔒 FULLSCREEN LOADER (OPTIONAL)
+          /// FULLSCREEN LOADER (OPTIONAL)
           if (_loading) Container(color: Colors.black.withOpacity(0.15)),
         ],
       ),

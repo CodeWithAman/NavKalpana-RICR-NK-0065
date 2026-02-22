@@ -77,7 +77,6 @@ class _OnboardingNameState extends State<OnboardingName> {
                 textCapitalization: TextCapitalization.words,
                 keyboardType: TextInputType.name,
                 onChanged: (value) {
-                  // Live validation per alphabet
                   if (errorText != null && _isValidName(value)) {
                     setState(() => errorText = null);
                   }
@@ -100,7 +99,7 @@ class _OnboardingNameState extends State<OnboardingName> {
                 width: double.infinity,
                 height: 52,
                 child: ElevatedButton(
-                  onPressed: _onNext, // always enabled
+                  onPressed: _onNext,
                   style: ElevatedButton.styleFrom(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(14),

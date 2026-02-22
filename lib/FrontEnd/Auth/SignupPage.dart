@@ -139,7 +139,6 @@ class _SignupPageState extends State<SignupPage> {
       final String uid = user.uid;
       final String email = user.email ?? '';
 
-      /// Navigate
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(

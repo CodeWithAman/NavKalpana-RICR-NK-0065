@@ -46,7 +46,6 @@ class _AccessSetupPageState extends State<AccessSetupPage> {
           children: [
             const SizedBox(height: 40),
 
-            /// Shield Icon
             Container(
               height: 56,
               width: 56,
@@ -78,7 +77,6 @@ class _AccessSetupPageState extends State<AccessSetupPage> {
 
             const SizedBox(height: 28),
 
-            /// Pinput
             Pinput(
               length: 4,
               controller: _pinController,
@@ -105,7 +103,6 @@ class _AccessSetupPageState extends State<AccessSetupPage> {
 
             const SizedBox(height: 28),
 
-            /// Set PIN Button
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24),
               child: ElevatedButton(
@@ -144,7 +141,6 @@ class _AccessSetupPageState extends State<AccessSetupPage> {
 
             const Spacer(),
 
-            /// Optional: Custom keypad note
             Padding(
               padding: const EdgeInsets.only(bottom: 24),
               child: Text(

@@ -47,7 +47,6 @@ class HomePage extends StatelessWidget {
         child: const Icon(Icons.add, color: Colors.white, size: 30),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      bottomNavigationBar: _buildBottomNavBar(),
     );
   }
 
@@ -253,51 +252,6 @@ class HomePage extends StatelessWidget {
           ),
         );
       },
-    );
-  }
-
-  Widget _buildBottomNavBar() {
-    return BottomAppBar(
-      color: Colors.white,
-      shape: const CircularNotchedRectangle(),
-      notchMargin: 10,
-      child: SizedBox(
-        height: 60,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            _navBtn(Icons.home_filled, "Home", true),
-            _navBtn(Icons.assignment_outlined, "Transaction", false),
-            const SizedBox(width: 40), // Space for the FAB notch
-            _navBtn(Icons.bar_chart_rounded, "Analytics", false),
-            _navBtn(Icons.person_outline, "Account", false),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _navBtn(IconData icon, String label, bool active) {
-    return Expanded(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            icon,
-            color: active ? const Color(0xFF7B61FF) : Colors.black26,
-            size: 24,
-          ),
-          const SizedBox(height: 4),
-          Text(
-            label,
-            style: TextStyle(
-              color: active ? const Color(0xFF7B61FF) : Colors.black26,
-              fontSize: 10,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-        ],
-      ),
     );
   }
 
