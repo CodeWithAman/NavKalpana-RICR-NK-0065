@@ -79,7 +79,6 @@ class _LoginPageState extends State<LoginPage> {
         return;
       }
 
-      // Email verification
       if (!user.emailVerified) {
         await user.sendEmailVerification();
         await _auth.signOut();
@@ -89,14 +88,12 @@ class _LoginPageState extends State<LoginPage> {
 
       final uid = user.uid;
 
-      // Fetch PIN hash from Firestore
       final pinHash = await _fetchPinHash(uid);
       if (pinHash == null) {
         _showMessage("PIN not set. Please set your PIN.");
         return;
       }
 
-      // Save to SharedPreferences
       await _saveAuthData(uid: uid, pinHash: pinHash);
 
       _showMessage("Login successful");
@@ -139,14 +136,12 @@ class _LoginPageState extends State<LoginPage> {
 
       final uid = user.uid;
 
-      // Fetch PIN hash
       final pinHash = await _fetchPinHash(uid);
       if (pinHash == null) {
         _showMessage("PIN not set. Please set your PIN.");
         return;
       }
 
-      // Save to SharedPreferences
       await _saveAuthData(uid: uid, pinHash: pinHash);
 
       _showMessage("Google login successful");
@@ -183,68 +178,185 @@ class _LoginPageState extends State<LoginPage> {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
   }
 
-  // ---------------- UI ----------------
+  // ---------------- UPDATED UI ----------------
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Login")),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            TextField(
-              controller: _emailController,
-              keyboardType: TextInputType.emailAddress,
-              decoration: const InputDecoration(
-                labelText: "Email",
-                border: OutlineInputBorder(),
+      backgroundColor: Colors.white,
+
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 40),
+
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const SizedBox(height: 20),
+
+              const Text(
+                "Manage your expenses with",
+                style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400),
+                textAlign: TextAlign.center,
               ),
-            ),
-            const SizedBox(height: 16),
 
-            TextField(
-              controller: _passwordController,
-              obscureText: true,
-              decoration: const InputDecoration(
-                labelText: "Password",
-                border: OutlineInputBorder(),
+              const SizedBox(height: 5),
+
+              const Text(
+                "Ledger",
+                style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
               ),
-            ),
 
-            Align(
-              alignment: Alignment.centerRight,
-              child: TextButton(
-                onPressed: resetPassword,
-                child: const Text("Forgot Password?"),
+              const SizedBox(height: 10),
+
+              const Text(
+                "login to your ledger account",
+                style: TextStyle(color: Colors.grey, fontSize: 16),
               ),
-            ),
 
-            const SizedBox(height: 16),
+              const SizedBox(height: 40),
 
-            SizedBox(
-              width: double.infinity,
-              height: 48,
-              child: ElevatedButton(
-                onPressed: _loading ? null : loginWithEmail,
-                child: _loading
-                    ? const CircularProgressIndicator(color: Colors.white)
-                    : const Text("Login"),
+              // ---------------- EMAIL FIELD ----------------
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 18),
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade100,
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: TextField(
+                  controller: _emailController,
+                  decoration: const InputDecoration(
+                    border: InputBorder.none,
+                    hintText: "Enter email",
+                  ),
+                ),
               ),
-            ),
 
-            const SizedBox(height: 12),
+              const SizedBox(height: 20),
 
-            SizedBox(
-              width: double.infinity,
-              height: 48,
-              child: OutlinedButton.icon(
-                onPressed: _loading ? null : loginWithGoogle,
-                icon: const Icon(Icons.login),
-                label: const Text("Continue with Google"),
+              // ---------------- PASSWORD FIELD ----------------
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 18),
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade100,
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: TextField(
+                  controller: _passwordController,
+                  obscureText: true,
+                  decoration: const InputDecoration(
+                    border: InputBorder.none,
+                    hintText: "Password",
+                  ),
+                ),
               ),
-            ),
-          ],
+
+              const SizedBox(height: 15),
+
+              Align(
+                alignment: Alignment.centerRight,
+                child: TextButton(
+                  onPressed: resetPassword,
+                  child: const Text(
+                    "Forgot Password?",
+                    style: TextStyle(color: Colors.grey),
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 10),
+
+              // ---------------- LOGIN BUTTON ----------------
+              SizedBox(
+                width: double.infinity,
+                height: 55,
+                child: ElevatedButton(
+                  onPressed: _loading ? null : loginWithEmail,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.black,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(40),
+                    ),
+                  ),
+                  child: _loading
+                      ? const CircularProgressIndicator(color: Colors.white)
+                      : const Text(
+                          "Login",
+                          style: TextStyle(fontSize: 18, color: Colors.white),
+                        ),
+                ),
+              ),
+
+              const SizedBox(height: 15),
+
+              const Text(
+                "Don’t have an account?",
+                style: TextStyle(color: Colors.grey, fontSize: 14),
+              ),
+
+              const SizedBox(height: 5),
+
+              const Text(
+                "Sign Up",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+
+              const SizedBox(height: 25),
+
+              Row(
+                children: const [
+                  Expanded(child: Divider()),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 8),
+                    child: Text("Or"),
+                  ),
+                  Expanded(child: Divider()),
+                ],
+              ),
+
+              const SizedBox(height: 25),
+
+              // ---------------- GOOGLE BUTTON ----------------
+              SizedBox(
+                width: double.infinity,
+                height: 55,
+                child: OutlinedButton(
+                  onPressed: _loading ? null : loginWithGoogle,
+                  style: OutlinedButton.styleFrom(
+                    side: BorderSide(color: Colors.grey.shade300),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(40),
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.network(
+                        "https://www.google.com/favicon.ico",
+                        width: 20,
+                        height: 20,
+                      ),
+                      const SizedBox(width: 12),
+                      const Text(
+                        "Login with Google",
+                        style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 20),
+
+              const Text(
+                "by logging in you agree to our Terms &\nconditions and Privacy Policy",
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.grey, fontSize: 12),
+              ),
+            ],
+          ),
         ),
       ),
     );
