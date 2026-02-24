@@ -1,3 +1,4 @@
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -42,6 +43,7 @@ class _NavigationState extends State<Navigation> with WidgetsBindingObserver {
     return Scaffold(
       backgroundColor: Colors.white,
       body: IndexedStack(index: selectIndex, children: body),
+
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
           boxShadow: <BoxShadow>[
@@ -84,6 +86,37 @@ class _NavigationState extends State<Navigation> with WidgetsBindingObserver {
           ],
         ),
       ),
+      // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      // floatingActionButton: FloatingActionButton(
+      //   backgroundColor: Colors.black,
+      //   shape: CircleBorder(),
+      //   onPressed: () {},
+      //   tooltip: 'Increment',
+      //   child: Icon(Icons.add),
+      // ),
+
+      // // FloatingActionButton
+      // bottomNavigationBar:
+
+      // BottomAppBar(
+      //   shape: CircularNotchedRectangle(),
+      //   child: Row(
+      //     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      //     children: [
+      //       IconButton(
+      //         onPressed: () {},
+      //         icon: Icon(Icons.home, color: Colors.amber),
+      //       ),
+      //       // IconButton
+      //       IconButton(
+      //         onPressed: () {},
+      //         icon: Icon(Icons.settings, color: Colors.black45),
+      //       ),
+      //       // IconButton
+      //     ],
+      //   ),
+      // ),
+      // BottomAppBar
     );
   }
 }
