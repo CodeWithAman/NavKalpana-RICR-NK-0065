@@ -49,8 +49,9 @@ class _SignupPageState extends State<SignupPage> {
   // ---------------- EMAIL VERIFICATION CHECK ----------------
 
   void startEmailVerificationCheck(String uid) {
-    _emailCheckTimer =
-        Timer.periodic(const Duration(seconds: 3), (timer) async {
+    _emailCheckTimer = Timer.periodic(const Duration(seconds: 3), (
+      timer,
+    ) async {
       await _auth.currentUser?.reload();
       final user = _auth.currentUser;
 
@@ -62,10 +63,8 @@ class _SignupPageState extends State<SignupPage> {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (_) => AccessSetupPage(
-              email: _emailController.text.trim(),
-              uid: uid,
-            ),
+            builder: (_) =>
+                AccessSetupPage(email: _emailController.text.trim(), uid: uid),
           ),
         );
       }
@@ -127,8 +126,7 @@ class _SignupPageState extends State<SignupPage> {
         accessToken: googleAuth.idToken,
       );
 
-      final userCredential =
-          await _auth.signInWithCredential(credential);
+      final userCredential = await _auth.signInWithCredential(credential);
 
       final user = userCredential.user;
 
@@ -151,8 +149,7 @@ class _SignupPageState extends State<SignupPage> {
   }
 
   void show(String msg) {
-    ScaffoldMessenger.of(context)
-        .showSnackBar(SnackBar(content: Text(msg)));
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
   }
 
   @override
@@ -182,7 +179,6 @@ class _SignupPageState extends State<SignupPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-
                 SizedBox(height: size.height * 0.04),
 
                 RichText(
@@ -212,10 +208,7 @@ class _SignupPageState extends State<SignupPage> {
                 const Text(
                   "create your account with ledger",
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.grey,
-                  ),
+                  style: TextStyle(fontSize: 16, color: Colors.grey),
                 ),
 
                 SizedBox(height: size.height * 0.07),
@@ -293,9 +286,7 @@ class _SignupPageState extends State<SignupPage> {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(
-                          builder: (_) => const LoginPage(),
-                        ),
+                        MaterialPageRoute(builder: (_) => const LoginPage()),
                       );
                     },
                     child: const Text(
@@ -358,10 +349,7 @@ class _SignupPageState extends State<SignupPage> {
                   child: Text(
                     "by creating account.you agree to our Terms & onditions and Privacy Policy",
                     textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 13,
-                      color: Colors.grey,
-                    ),
+                    style: TextStyle(fontSize: 13, color: Colors.grey),
                   ),
                 ),
               ],
