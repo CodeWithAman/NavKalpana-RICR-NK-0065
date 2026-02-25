@@ -117,7 +117,6 @@ class _SignupPageState extends State<SignupPage> {
       setState(() => _loading = true);
 
       final googleUser = await _googleSignIn.authenticate();
-      if (googleUser == null) return;
 
       final googleAuth = googleUser.authentication;
 
@@ -192,7 +191,7 @@ class _SignupPageState extends State<SignupPage> {
                     ),
                     children: [
                       TextSpan(
-                        text: "Ledger",
+                        text: "\nLedger",
                         style: TextStyle(
                           fontSize: 30,
                           fontWeight: FontWeight.w700,
@@ -347,7 +346,7 @@ class _SignupPageState extends State<SignupPage> {
 
                 const Center(
                   child: Text(
-                    "by creating account.you agree to our Terms & onditions and Privacy Policy",
+                    "by creating account.you agree to our Terms & Conditions and Privacy Policy",
                     textAlign: TextAlign.center,
                     style: TextStyle(fontSize: 13, color: Colors.grey),
                   ),
