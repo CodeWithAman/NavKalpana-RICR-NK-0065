@@ -1,93 +1,130 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:intl/intl.dart';
+import 'package:ledger/FrontEnd/Extras/CommonFunctions.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
   @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  final Map<String, String> currencySymbolMap = {
+    "USD": r"$",
+    "EUR": "€",
+    "INR": "₹",
+    "GBP": "£",
+    "JPY": "¥",
+    "AUD": r"A$",
+    "CAD": r"CA$",
+    "CHF": "CHF",
+    "CNY": "元",
+    "SGD": r"S$",
+    "AED": "AED",
+  };
+
+  @override
   Widget build(BuildContext context) {
-    MediaQuery.of(context).viewPadding.bottom == 0
-        ? null
-        : SystemChrome.setSystemUIOverlayStyle(
-            const SystemUiOverlayStyle(
-              statusBarColor: Colors.transparent,
-              systemNavigationBarColor: Color(0xFFFFFFFF),
-            ),
-          );
-    return Scaffold(
-      body: Stack(
-        children: [
-          Container(
-            decoration: const BoxDecoration(
-              color: Colors.white, // Base color
-              gradient: RadialGradient(
-                center: Alignment(0, -1.2), // Starts slightly above the screen
-                radius: 1.5,
-                colors: [
-                  Color(0xFFD6C6FF), // The soft purple
-                  Colors.white, // Fades to white
-                ],
-                stops: [0.0, 0.7], // Controls how quickly it fades
-              ),
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 12.w),
+    return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+      stream: FirebaseFirestore.instance
+          .collection('users')
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .snapshots(),
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return Text('Error: ${snapshot.error}');
+        }
+
+        if (!snapshot.hasData || snapshot.data?.data() == null) {
+          // ---------------- SHIMMER ----------------
+        }
+
+        var data = snapshot.data!.data()!;
+
+        // String name = data['name'] ?? '';
+        // List savedResume = data['savedResume'] ?? [];
+        String name = data["name"] ?? '';
+        String currency = data['currency'] ?? '';
+        double rewardPoints = data["rewardPoints"] ?? 0.00;
+        String countryCode = data["countryCode"] ?? "";
+
+        return Scaffold(
+          backgroundColor: Color(0XFFEDEEF0),
+          body: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 24.w),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                SizedBox(height: 52.h),
+                SizedBox(height: 40.h),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Container(
-                      height: 45.h,
-                      width: 45.w,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        shape: BoxShape.circle,
-                      ),
-                      child: Center(
-                        child: Image.asset(
-                          "assets/icons/setting.png",
-                          height: 20.h,
-                        ),
-                      ),
-                    ),
-                    Row(
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        Image.asset("assets/icons/calendar.png", height: 2.h),
-                        SizedBox(height: 12.w),
                         Text(
-                          DateTime.now().toString(),
-                          style: TextStyle(fontWeight: FontWeight.w500),
+                          "Hello ${capitalizeFirstLetterOfEachWord(name.toString().split(" ")[0])}!",
+                          style: TextStyle(
+                            fontSize: 18.sp,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        Text(
+                          DateFormat('EEE, d MMM').format(DateTime.now()),
+                          style: TextStyle(
+                            color: Colors.black45,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                       ],
                     ),
-                    Container(
-                      height: 45.h,
-                      width: 45.w,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        shape: BoxShape.circle,
-                      ),
-                      child: Center(
-                        child: Image.asset(
-                          "assets/icons/notification.png",
-                          height: 20.h,
-                        ),
-                      ),
+                    Image.asset(
+                      "assets/icons/notification.png",
+                      height: 28.h,
+                      width: 28.w,
+                      fit: BoxFit.cover,
                     ),
                   ],
+                ),
+                SizedBox(height: 12.h),
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12.r),
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 20.w,
+                      vertical: 12.h,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Month Spending",
+                          style: TextStyle(
+                            color: Colors.black45,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        Text("${currencySymbolMap[currency]} "),
+                      ],
+                    ),
+                  ),
                 ),
               ],
             ),
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 }
