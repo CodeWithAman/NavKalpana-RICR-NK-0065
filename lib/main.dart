@@ -6,6 +6,7 @@ import 'package:ledger/FrontEnd/Home/HomePage.dart';
 import 'package:ledger/FrontEnd/Auth/SplashScreen.dart';
 import 'package:ledger/firebase_options.dart';
 
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
