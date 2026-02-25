@@ -117,7 +117,6 @@ class _SignupPageState extends State<SignupPage> {
       setState(() => _loading = true);
 
       final googleUser = await _googleSignIn.authenticate();
-      if (googleUser == null) return;
 
       final googleAuth = googleUser.authentication;
 
