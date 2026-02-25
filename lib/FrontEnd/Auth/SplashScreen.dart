@@ -16,7 +16,6 @@ class Splashscreen extends StatefulWidget {
 
 class _SplashscreenState extends State<Splashscreen>
     with TickerProviderStateMixin {
-
   late AnimationController _mainController;
   late AnimationController _lineController;
   late Animation<double> _fadeAnimation;
@@ -50,20 +49,20 @@ class _SplashscreenState extends State<Splashscreen>
       vsync: this,
     );
 
-    _fadeAnimation = Tween<double>(begin: 0, end: 1).animate(
-      CurvedAnimation(parent: _mainController, curve: Curves.easeIn),
-    );
+    _fadeAnimation = Tween<double>(
+      begin: 0,
+      end: 1,
+    ).animate(CurvedAnimation(parent: _mainController, curve: Curves.easeIn));
 
     _slideAnimation = Tween<Offset>(
       begin: const Offset(0, -0.1),
       end: Offset.zero,
-    ).animate(
-      CurvedAnimation(parent: _mainController, curve: Curves.easeOut),
-    );
+    ).animate(CurvedAnimation(parent: _mainController, curve: Curves.easeOut));
 
-    _lineAnimation = Tween<double>(begin: 0, end: 1).animate(
-      CurvedAnimation(parent: _lineController, curve: Curves.easeOut),
-    );
+    _lineAnimation = Tween<double>(
+      begin: 0,
+      end: 1,
+    ).animate(CurvedAnimation(parent: _lineController, curve: Curves.easeOut));
 
     _subtitleAnimation = Tween<double>(begin: 0, end: 0.8).animate(
       CurvedAnimation(
@@ -140,7 +139,6 @@ class _SplashscreenState extends State<Splashscreen>
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-
                 AnimatedBuilder(
                   animation: _lineAnimation,
                   builder: (context, child) {
