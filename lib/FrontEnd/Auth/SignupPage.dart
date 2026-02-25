@@ -192,7 +192,7 @@ class _SignupPageState extends State<SignupPage> {
                     ),
                     children: [
                       TextSpan(
-                        text: "Ledger",
+                        text: "\nLedger",
                         style: TextStyle(
                           fontSize: 30,
                           fontWeight: FontWeight.w700,
