@@ -161,118 +161,148 @@ class _AccessVerificationPageState extends State<AccessVerificationPage>
 
   @override
   Widget build(BuildContext context) {
-    final pinTheme = PinTheme(
-      width: 56,
-      height: 56,
+    final defaultPinTheme = PinTheme(
+      width: 58,
+      height: 58,
       textStyle: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: Colors.grey.shade300),
+        border: Border.all(color: Colors.grey.shade300, width: 1.4),
       ),
     );
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF6F4FF),
-      body: SafeArea(
-        child: Column(
-          children: [
-            const SizedBox(height: 40),
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [Colors.black, Colors.white],
+            stops: [0.0, 0.65],
+          ),
+        ),
+        child: SafeArea(
+          child: Column(
+            children: [
+              const SizedBox(height: 48),
 
-            Container(
-              height: 56,
-              width: 56,
-              decoration: BoxDecoration(
-                color: const Color(0xFF8B5CF6).withOpacity(0.12),
-                shape: BoxShape.circle,
-              ),
-              child: const Icon(
-                Icons.fingerprint,
-                color: Color(0xFF8B5CF6),
-                size: 28,
-              ),
-            ),
-
-            const SizedBox(height: 20),
-
-            const Text(
-              'Verify Access',
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-            ),
-
-            const SizedBox(height: 8),
-
-            Text(
-              'Use fingerprint or enter your PIN',
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
-            ),
-
-            const SizedBox(height: 28),
-
-            Pinput(
-              length: 4,
-              controller: _pinController,
-              focusNode: _focusNode,
-              obscureText: true,
-              obscuringCharacter: '●',
-              autofocus: false,
-              defaultPinTheme: pinTheme,
-              focusedPinTheme: pinTheme.copyWith(
-                decoration: pinTheme.decoration!.copyWith(
-                  border: Border.all(color: const Color(0xFF8B5CF6), width: 2),
+              /// 🛡 Shield Icon
+              Container(
+                height: 64,
+                width: 64,
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.17),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.shield_rounded,
+                  color: Colors.white,
+                  size: 30,
                 ),
               ),
-              onCompleted: (_) => _verifyPin(),
-            ),
 
-            if (_error != null) ...[
-              const SizedBox(height: 12),
-              Text(_error!, style: const TextStyle(color: Colors.red)),
-            ],
+              const SizedBox(height: 22),
 
-            const SizedBox(height: 28),
+              /// 🔐 Title
+              const Text(
+                'Verify Your Secure PIN',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.white,
+                ),
+              ),
 
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: ElevatedButton(
-                onPressed: isPinComplete && !_loading ? _verifyPin : null,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF8B5CF6),
-                  minimumSize: const Size.fromHeight(52),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(18),
+              const SizedBox(height: 10),
+
+              /// 📄 Subtitle
+              const Text(
+                'Enter your 4 digit PIN to access\nyour wallet securely.',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.white70,
+                  height: 1.4,
+                ),
+              ),
+
+              const SizedBox(height: 40),
+
+              /// 🔢 PIN INPUT FIELD
+              Pinput(
+                length: 4,
+                controller: _pinController,
+                focusNode: _focusNode,
+                obscureText: true,
+                obscuringCharacter: '●',
+                autofocus: true,
+                defaultPinTheme: defaultPinTheme,
+                focusedPinTheme: defaultPinTheme.copyWith(
+                  decoration: defaultPinTheme.decoration!.copyWith(
+                    border: Border.all(color: Colors.black, width: 2),
                   ),
                 ),
-                child: _loading
-                    ? const SizedBox(
-                        height: 22,
-                        width: 22,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          color: Colors.white,
-                        ),
-                      )
-                    : const Text(
-                        'Verify PIN',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
+                onCompleted: (_) => _verifyPin(),
               ),
-            ),
 
-            const Spacer(),
+              if (_error != null) ...[
+                const SizedBox(height: 12),
+                Text(_error!, style: const TextStyle(color: Colors.red)),
+              ],
 
-            TextButton.icon(
-              onPressed: _tryBiometricAuth,
-              icon: const Icon(Icons.fingerprint),
-              label: const Text('Use Fingerprint'),
-            ),
+              const SizedBox(height: 38),
 
-            const SizedBox(height: 16),
-          ],
+              /// 🔘 Verify Button
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 28),
+                child: ElevatedButton(
+                  onPressed: isPinComplete && !_loading ? _verifyPin : null,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.black,
+                    disabledBackgroundColor: Colors.black.withOpacity(0.35),
+                    minimumSize: const Size.fromHeight(56),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                  ),
+                  child: _loading
+                      ? const SizedBox(
+                          height: 22,
+                          width: 22,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: Colors.white,
+                          ),
+                        )
+                      : const Text(
+                          'Verify PIN',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                          ),
+                        ),
+                ),
+              ),
+
+              const Spacer(),
+
+              Padding(
+                padding: const EdgeInsets.only(bottom: 26),
+                child: TextButton.icon(
+                  onPressed: _tryBiometricAuth,
+                  icon: const Icon(Icons.fingerprint, color: Colors.black),
+                  label: const Text(
+                    'Use Fingerprint',
+                    style: TextStyle(color: Colors.black),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
