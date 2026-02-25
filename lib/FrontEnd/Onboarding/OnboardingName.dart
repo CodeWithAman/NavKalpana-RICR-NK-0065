@@ -49,29 +49,46 @@ class _OnboardingNameState extends State<OnboardingName> {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+
     return Scaffold(
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
+          padding: EdgeInsets.symmetric(
+            horizontal: size.width * 0.09,
+            vertical: size.height * 0.04,
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Spacer(),
 
+              /// Title
               const Text(
                 "What's your name?",
-                style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  fontSize: 30,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.black,
+                ),
               ),
 
-              const SizedBox(height: 8),
+              const SizedBox(height: 10),
 
+              /// Subtitle
               const Text(
                 "This helps us personalize your experience.",
-                style: TextStyle(fontSize: 16, color: Colors.grey),
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.black54,
+                  height: 1.4,
+                ),
               ),
 
-              const SizedBox(height: 32),
+              SizedBox(height: size.height * 0.05),
 
+              /// Name Field
               TextField(
                 controller: _nameController,
                 textCapitalization: TextCapitalization.words,
@@ -83,33 +100,52 @@ class _OnboardingNameState extends State<OnboardingName> {
                 },
                 decoration: InputDecoration(
                   hintText: "Enter your name",
+                  hintStyle: const TextStyle(color: Colors.black38),
                   errorText: errorText,
                   filled: true,
                   fillColor: Colors.grey.shade100,
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 18,
+                    vertical: 18,
+                  ),
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14),
+                    borderRadius: BorderRadius.circular(16),
                     borderSide: BorderSide.none,
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(16),
+                    borderSide: const BorderSide(
+                      color: Colors.black,
+                      width: 1.5,
+                    ),
                   ),
                 ),
               ),
 
               const Spacer(),
 
+              /// Next Button
               SizedBox(
                 width: double.infinity,
-                height: 52,
+                height: 56,
                 child: ElevatedButton(
                   onPressed: _onNext,
                   style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.black,
+                    foregroundColor: Colors.white,
+                    elevation: 0,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14),
+                      borderRadius: BorderRadius.circular(16),
                     ),
                   ),
-                  child: const Text("Next", style: TextStyle(fontSize: 16)),
+                  child: const Text(
+                    "Next",
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                  ),
                 ),
               ),
 
-              const SizedBox(height: 24),
+              SizedBox(height: size.height * 0.04),
             ],
           ),
         ),
