@@ -7,7 +7,12 @@ import 'package:pinput/pinput.dart';
 class AccessSetupPage extends StatefulWidget {
   final String uid;
   final String email;
-  const AccessSetupPage({super.key, required this.uid, required this.email});
+
+  const AccessSetupPage({
+    super.key,
+    required this.uid,
+    required this.email,
+  });
 
   @override
   State<AccessSetupPage> createState() => _AccessSetupPageState();
@@ -29,126 +34,159 @@ class _AccessSetupPageState extends State<AccessSetupPage> {
   @override
   Widget build(BuildContext context) {
     final defaultPinTheme = PinTheme(
-      width: 56,
-      height: 56,
+      width: 58,
+      height: 58,
       textStyle: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: Colors.grey.shade300),
+        border: Border.all(color: Colors.grey.shade300, width: 1.4),
       ),
     );
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF6F4FF),
-      body: SafeArea(
-        child: Column(
-          children: [
-            const SizedBox(height: 40),
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
 
-            Container(
-              height: 56,
-              width: 56,
-              decoration: BoxDecoration(
-                color: const Color(0xFF8B5CF6).withOpacity(0.12),
-                shape: BoxShape.circle,
-              ),
-              child: const Icon(
-                Icons.shield_rounded,
-                color: Color(0xFF8B5CF6),
-                size: 28,
-              ),
-            ),
+        /// 🎨 UPDATED BLACK + WHITE GRADIENT
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Colors.black,
+              Colors.white,
+            ],
+            stops: [0.0, 0.65],
+          ),
+        ),
 
-            const SizedBox(height: 20),
+        child: SafeArea(
+          child: Column(
+            children: [
+              const SizedBox(height: 48),
 
-            const Text(
-              'Set Your Secure PIN',
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-            ),
-
-            const SizedBox(height: 8),
-
-            Text(
-              'Add a 4 digit PIN to protect your wallet\nand quick access.',
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
-            ),
-
-            const SizedBox(height: 28),
-
-            Pinput(
-              length: 4,
-              controller: _pinController,
-              focusNode: _focusNode,
-              obscureText: true,
-              obscuringCharacter: '●',
-              autofocus: true,
-              defaultPinTheme: defaultPinTheme,
-              focusedPinTheme: defaultPinTheme.copyWith(
-                decoration: defaultPinTheme.decoration!.copyWith(
-                  border: Border.all(color: const Color(0xFF8B5CF6), width: 2),
+              /// 🛡 Shield Icon
+              Container(
+                height: 64,
+                width: 64,
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.17),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.shield_rounded,
+                  color: Colors.white,
+                  size: 30,
                 ),
               ),
-              submittedPinTheme: defaultPinTheme.copyWith(
-                decoration: defaultPinTheme.decoration!.copyWith(
-                  border: Border.all(color: const Color(0xFF8B5CF6)),
+
+              const SizedBox(height: 22),
+
+              /// 🔐 Title
+              const Text(
+                'Set Your Secure PIN',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.white,
                 ),
               ),
-              onChanged: (_) => setState(() {}),
-              onCompleted: (pin) {
-                debugPrint('PIN entered: $pin');
-              },
-            ),
 
-            const SizedBox(height: 28),
+              const SizedBox(height: 10),
 
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: ElevatedButton(
-                onPressed: isPinComplete
-                    ? () {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => OnboardingName(
-                              uid: widget.uid,
-                              email: widget.email,
-                              pin: sha256
-                                  .convert(utf8.encode(_pinController.text))
-                                  .toString(),
-                            ),
-                          ),
-                        );
-                      }
-                    : null,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF8B5CF6),
-                  disabledBackgroundColor: const Color(
-                    0xFF8B5CF6,
-                  ).withOpacity(0.4),
-                  minimumSize: const Size.fromHeight(52),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(18),
+              /// 📄 Subtitle
+              const Text(
+                'Add a 4 digit PIN to protect your wallet\nand quick access.',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.white70,
+                  height: 1.4,
+                ),
+              ),
+
+              const SizedBox(height: 40),
+
+              /// 🔢 PIN INPUT FIELD
+              Pinput(
+                length: 4,
+                controller: _pinController,
+                focusNode: _focusNode,
+                obscureText: true,
+                obscuringCharacter: '●',
+                autofocus: true,
+                defaultPinTheme: defaultPinTheme,
+                focusedPinTheme: defaultPinTheme.copyWith(
+                  decoration: defaultPinTheme.decoration!.copyWith(
+                    border: Border.all(color: Colors.black, width: 2),
                   ),
                 ),
-                child: const Text(
-                  'Set Pin',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                submittedPinTheme: defaultPinTheme.copyWith(
+                  decoration: defaultPinTheme.decoration!.copyWith(
+                    border: Border.all(color: Colors.black),
+                  ),
+                ),
+                onChanged: (_) => setState(() {}),
+              ),
+
+              const SizedBox(height: 38),
+
+              /// 🔘 Set Pin Button
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 28),
+                child: ElevatedButton(
+                  onPressed: isPinComplete
+                      ? () {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => OnboardingName(
+                                uid: widget.uid,
+                                email: widget.email,
+                                pin: sha256
+                                    .convert(utf8.encode(_pinController.text))
+                                    .toString(),
+                              ),
+                            ),
+                          );
+                        }
+                      : null,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.black,
+                    disabledBackgroundColor:
+                        Colors.black.withOpacity(0.35),
+                    minimumSize: const Size.fromHeight(56),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                  ),
+                  child: const Text(
+                    'Set Pin',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                    ),
+                  ),
                 ),
               ),
-            ),
 
-            const Spacer(),
+              const Spacer(),
 
-            Padding(
-              padding: const EdgeInsets.only(bottom: 24),
-              child: Text(
-                'Use keyboard to enter PIN',
-                style: TextStyle(fontSize: 12, color: Colors.grey.shade500),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 26),
+                child: Text(
+                  'Use keyboard to enter PIN',
+                  style: TextStyle(
+                    color: Colors.black54,
+                    fontSize: 13,
+                  ),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
