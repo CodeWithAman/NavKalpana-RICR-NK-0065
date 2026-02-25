@@ -203,7 +203,7 @@ class _LoginPageState extends State<LoginPage> {
 
               const Text(
                 "Ledger",
-                style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 40, fontWeight: FontWeight.w700),
               ),
 
               const SizedBox(height: 10),
