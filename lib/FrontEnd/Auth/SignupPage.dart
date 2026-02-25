@@ -346,7 +346,7 @@ class _SignupPageState extends State<SignupPage> {
 
                 const Center(
                   child: Text(
-                    "by creating account.you agree to our Terms & onditions and Privacy Policy",
+                    "by creating account.you agree to our Terms & Conditions and Privacy Policy",
                     textAlign: TextAlign.center,
                     style: TextStyle(fontSize: 13, color: Colors.grey),
                   ),
