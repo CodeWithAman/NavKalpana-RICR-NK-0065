@@ -1,11 +1,9 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:ledger/FrontEnd/Auth/AccessSetupPage.dart';
 import 'package:ledger/FrontEnd/Auth/LoginPage.dart';
-import 'package:page_transition/page_transition.dart';
 
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});
