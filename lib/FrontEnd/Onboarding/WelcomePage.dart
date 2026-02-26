@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:ledger/FrontEnd/Home/Navigation.dart';
+import 'package:ledger/screens/main_navigation.dart';
 import 'package:lottie/lottie.dart';
 
 class WelcomePage extends StatefulWidget {
@@ -22,7 +22,7 @@ class _WelcomePageState extends State<WelcomePage> {
     await Future.delayed(const Duration(seconds: 8), () {});
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => Navigation()),
+      MaterialPageRoute(builder: (context) => MainNavigation()),
     );
   }
 

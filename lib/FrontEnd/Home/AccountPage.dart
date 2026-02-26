@@ -12,38 +12,40 @@ class AccountPage extends StatefulWidget {
 }
 
 class _AccountPageState extends State<AccountPage> {
-  bool isFetching = false;
+  bool isFetching = true;
 
-  String profilePicture = '';
   String name = '';
   String email = '';
+  String profilePicture = '';
+
+  @override
+  void initState() {
+    super.initState();
+    loadUserData();
+  }
 
   Future<void> loadUserData() async {
-    setState(() {
-      isFetching = true;
-    });
-
     try {
-      DocumentSnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore
-          .instance
+      final uid = FirebaseAuth.instance.currentUser!.uid;
+      final snap = await FirebaseFirestore.instance
           .collection('users')
-          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .doc(uid)
           .get();
 
-      if (snapshot.exists) {
-        setState(() {
-          // U S E R   D A T A
-          profilePicture = snapshot.data()?['profilePicture'] ?? '';
-          name = snapshot.data()?['name'] ?? '';
-          email = snapshot.data()?['email'] ?? '';
-
-          // E X T R A S
-          isFetching = false;
-        });
-      } else {
+      if (!snap.exists) {
         if (mounted) userNotFound(context);
+        return;
       }
-    } catch (e) {
+
+      final data = snap.data() as Map<String, dynamic>;
+
+      setState(() {
+        name = data['name'] ?? '';
+        email = data['email'] ?? '';
+        profilePicture = data['profilePicture'] ?? '';
+        isFetching = false;
+      });
+    } catch (_) {
       if (mounted) userNotFound(context);
     }
   }
@@ -51,182 +53,224 @@ class _AccountPageState extends State<AccountPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0XFFEDEEF0),
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 12.w),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            SizedBox(height: 72.h),
-            Container(
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(24.r),
-              ),
-              child: ListTile(
-                contentPadding: EdgeInsets.symmetric(
-                  horizontal: 16.w,
-                  vertical: 8.h,
-                ),
-                leading: Container(
-                  height: 49.h,
-                  width: 49.w,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    shape: BoxShape.circle,
-                    image: DecorationImage(
-                      image: AssetImage("assets/images/profilePicture.jpg"),
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ),
-                title: Text(
-                  name,
-                  style: TextStyle(
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                subtitle: Text(
-                  email,
-                  style: TextStyle(fontSize: 13.sp, color: Colors.black45),
-                ),
-                trailing: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(99.r),
-                    color: Color(0xFFEDEEF0),
-                  ),
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 20.w,
-                      vertical: 7.h,
-                    ),
-                    child: Text(
-                      "Edit",
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 15.sp,
-                        fontWeight: FontWeight.w400,
+      backgroundColor: const Color(0xFFEDEEF0),
+      body: isFetching
+          ? const Center(child: CircularProgressIndicator())
+          : SingleChildScrollView(
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16.w),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(height: 70.h),
+
+                    /// ================= PROFILE CARD =================
+                    Container(
+                      padding: EdgeInsets.all(16.w),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(24.r),
+                      ),
+                      child: Row(
+                        children: [
+                          CircleAvatar(
+                            radius: 26.r,
+                            backgroundImage: profilePicture.isNotEmpty
+                                ? NetworkImage(profilePicture)
+                                : const AssetImage(
+                                        "assets/images/profilePicture.jpg",
+                                      )
+                                      as ImageProvider,
+                          ),
+                          SizedBox(width: 14.w),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  capitalizeFirstLetterOfEachWord(name),
+                                  style: TextStyle(
+                                    fontSize: 16.sp,
+                                    fontWeight: FontWeight.w700,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                SizedBox(height: 4.h),
+                                Text(
+                                  email,
+                                  style: TextStyle(
+                                    fontSize: 13.sp,
+                                    color: Colors.black45,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Container(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 18.w,
+                              vertical: 6.h,
+                            ),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFEDEEF0),
+                              borderRadius: BorderRadius.circular(20.r),
+                            ),
+                            child: Text(
+                              "Edit",
+                              style: TextStyle(
+                                fontSize: 14.sp,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                  ),
-                ),
-              ),
-            ),
-            SizedBox(height: 16.h),
-            Container(
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(24.r),
-                image: DecorationImage(
-                  image: AssetImage("assets/images/premiumFrame.png"),
-                  fit: BoxFit.cover,
-                ),
-              ),
-              child: ListTile(
-                contentPadding: EdgeInsets.symmetric(
-                  horizontal: 16.w,
-                  vertical: 4.h,
-                ),
-                leading: Container(
-                  height: 49.h,
-                  width: 49.w,
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.white54, width: 1.5.w),
-                    shape: BoxShape.circle,
-                    color: Colors.white12,
-                  ),
-                  child: Center(
-                    child: Image.asset(
-                      "assets/icons/crown.png",
-                      height: 28.h,
-                      width: 28.w,
-                      color: Colors.white,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ),
-                title: Text(
-                  "Premium Account",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w700,
-                    fontSize: 17.sp,
-                  ),
-                ),
-                subtitle: Text(
-                  "Enjoy your premium feaatures",
-                  style: TextStyle(
-                    color: Colors.white70,
-                    fontWeight: FontWeight.w500,
-                    fontSize: 14.sp,
-                  ),
-                ),
-              ),
-            ),
 
-            SizedBox(height: 32.h),
-            Text(
-              "Account Settings",
-              style: TextStyle(
-                color: Colors.black45,
-                fontWeight: FontWeight.w600,
-                fontSize: 14.sp,
+                    SizedBox(height: 18.h),
+
+                    /// ================= PREMIUM CARD =================
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(24.r),
+                        image: const DecorationImage(
+                          image: AssetImage("assets/images/premiumFrame.png"),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      child: ListTile(
+                        contentPadding: EdgeInsets.symmetric(
+                          horizontal: 16.w,
+                          vertical: 10.h,
+                        ),
+                        leading: Container(
+                          height: 46.h,
+                          width: 46.w,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: Colors.white54,
+                              width: 1.5,
+                            ),
+                          ),
+                          child: Center(
+                            child: Image.asset(
+                              "assets/icons/crown.png",
+                              height: 24.h,
+                              width: 24.w,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                        title: Text(
+                          "Premium Account",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        subtitle: Text(
+                          "Enjoy your premium features",
+                          style: TextStyle(
+                            color: Colors.white70,
+                            fontSize: 13.sp,
+                          ),
+                        ),
+                        trailing: const Icon(
+                          Icons.arrow_forward_ios,
+                          size: 14,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+
+                    SizedBox(height: 32.h),
+
+                    /// ================= SETTINGS =================
+                    Text(
+                      "Account Settings",
+                      style: TextStyle(
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black45,
+                      ),
+                    ),
+
+                    SizedBox(height: 12.h),
+
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(24.r),
+                      ),
+                      child: Column(
+                        children: [
+                          _settingsTile(
+                            icon: Icons.person_outline,
+                            label: "Account Information",
+                          ),
+                          _divider(),
+                          _settingsTile(
+                            icon: Icons.lock_outline,
+                            label: "Privacy & Security",
+                          ),
+                          _divider(),
+                          _settingsTile(
+                            icon: Icons.notifications_none,
+                            label: "Notifications",
+                          ),
+                          _divider(),
+                          _settingsTile(
+                            icon: Icons.help_outline,
+                            label: "Help & Support",
+                          ),
+                          _divider(),
+                          _settingsTile(
+                            icon: Icons.logout,
+                            label: "Logout",
+                            isDestructive: true,
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    SizedBox(height: 40.h),
+                  ],
+                ),
               ),
             ),
-            SizedBox(height: 12.h),
-            Container(
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(24.r),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  ListTile(
-                    contentPadding: EdgeInsets.symmetric(
-                      horizontal: 16.w,
-                      vertical: 4.h,
-                    ),
-                    leading: Image.asset(
-                      "assets/icons/key.png",
-                      height: 16.h,
-                      width: 16.w,
-                    ),
-                    title: Text(
-                      "Account Information",
-                      style: TextStyle(fontWeight: FontWeight.w600),
-                    ),
-                    trailing: Icon(Icons.arrow_forward_ios, size: 14.sp),
-                  ),
-                  ListTile(
-                    contentPadding: EdgeInsets.only(
-                      right: 16.w,
-                      left: 16.w,
-                      bottom: -6.h,
-                    ),
-                    leading: Image.asset(
-                      "assets/icons/key.png",
-                      height: 16.h,
-                      width: 16.w,
-                    ),
-                    title: Text(
-                      "Account Information",
-                      style: TextStyle(fontWeight: FontWeight.w600),
-                    ),
-                    trailing: Icon(Icons.arrow_forward_ios, size: 14.sp),
-                  ),
-                ],
-              ),
-            ),
-          ],
+    );
+  }
+
+  /// ================= SETTINGS TILE =================
+  Widget _settingsTile({
+    required IconData icon,
+    required String label,
+    bool isDestructive = false,
+  }) {
+    return ListTile(
+      contentPadding: EdgeInsets.symmetric(horizontal: 16.w),
+      leading: Icon(
+        icon,
+        size: 20,
+        color: isDestructive ? Colors.redAccent : Colors.black,
+      ),
+      title: Text(
+        label,
+        style: TextStyle(
+          fontWeight: FontWeight.w600,
+          color: isDestructive ? Colors.redAccent : Colors.black,
         ),
       ),
+      trailing: const Icon(Icons.arrow_forward_ios, size: 14),
+    );
+  }
+
+  Widget _divider() {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 16.w),
+      child: Divider(height: 1, color: Colors.grey.shade300),
     );
   }
 }

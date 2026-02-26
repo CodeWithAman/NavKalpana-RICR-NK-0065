@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:ledger/FrontEnd/Home/Navigation.dart';
+import 'package:ledger/screens/main_navigation.dart';
 import 'package:pinput/pinput.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:local_auth/local_auth.dart';
@@ -78,7 +78,7 @@ class _AccessVerificationPageState extends State<AccessVerificationPage>
       if (authenticated && mounted) {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (_) => const Navigation()),
+          MaterialPageRoute(builder: (_) => const MainNavigation()),
         );
       }
     } on PlatformException catch (e) {
@@ -114,7 +114,7 @@ class _AccessVerificationPageState extends State<AccessVerificationPage>
         if (!mounted) return;
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (_) => const Navigation()),
+          MaterialPageRoute(builder: (_) => const MainNavigation()),
         );
       } else {
         setState(() {
