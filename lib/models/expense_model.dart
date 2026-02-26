@@ -1,7 +1,4 @@
-// =====================================================
-// ExpenseModel – represents a single expense entry
-// =====================================================
-
+// ExpenseModel
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ExpenseModel {

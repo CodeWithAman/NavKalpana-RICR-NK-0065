@@ -1,7 +1,4 @@
-// =====================================================
 // FinancialHealthScreen – health score + risk details
-// =====================================================
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../theme/app_theme.dart';
@@ -24,29 +21,29 @@ class FinancialHealthScreen extends StatelessWidget {
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(children: [
-          // ── Score hero ────────────────────────────
+  
           _ScoreHero(stats: stats),
           const SizedBox(height: 20),
 
-          // ── Breakdown cards ───────────────────────
+         
           const _SectionTitle('Score Breakdown'),
           const SizedBox(height: 12),
           _BreakdownGrid(stats: stats),
           const SizedBox(height: 20),
 
-          // ── Risk ──────────────────────────────────
+         
           const _SectionTitle('Risk Assessment'),
           const SizedBox(height: 12),
           _RiskCard(stats: stats),
           const SizedBox(height: 20),
 
-          // ── Personality ───────────────────────────
+          
           const _SectionTitle('Spending Personality'),
           const SizedBox(height: 12),
           _PersonalityCard(stats: stats),
           const SizedBox(height: 20),
 
-          // ── Projections ───────────────────────────
+          
           const _SectionTitle('Projections'),
           const SizedBox(height: 12),
           _ProjectionCard(

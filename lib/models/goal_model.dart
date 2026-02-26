@@ -1,6 +1,4 @@
-// =====================================================
-// GoalModel – savings / financial goal
-// =====================================================
+// GoalModel
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -38,7 +36,7 @@ class GoalModel {
         .clamp(0, 9999);
   }
 
-  /// Required monthly savings to hit goal
+  //Required monthly savings to hit goal
   double get requiredMonthlySaving {
     final remaining = targetAmount - savedAmount;
     final months = monthsRemaining;

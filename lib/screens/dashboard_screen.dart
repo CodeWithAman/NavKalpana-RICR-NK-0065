@@ -1,7 +1,3 @@
-// =====================================================
-// DashboardScreen – main home screen with dark theme
-// =====================================================
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -222,7 +218,7 @@ class _BalanceCard extends StatelessWidget {
   );
 }
 
-// ── Quick stats (today vs yesterday) ─────────────────
+// Quick stats
 
 class _QuickStatsRow extends StatelessWidget {
   final String uid, symbol;
@@ -271,8 +267,7 @@ class _DailyCard extends StatelessWidget {
   }
 }
 
-// ── Budget section ────────────────────────────────────
-
+//  Budget section
 class _BudgetSection extends StatelessWidget {
   final String uid, symbol;
   final double budget;

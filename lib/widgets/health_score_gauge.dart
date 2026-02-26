@@ -74,8 +74,6 @@ class _GaugePainter extends CustomPainter {
   bool shouldRepaint(_GaugePainter old) => old.score != score || old.color != color;
 }
 
-// ── Risk indicator badge ──────────────────────────────
-
 class RiskIndicatorBadge extends StatelessWidget {
   final String level; // 'Low' | 'Moderate' | 'High'
   const RiskIndicatorBadge({super.key, required this.level});

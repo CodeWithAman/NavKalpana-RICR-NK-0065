@@ -1,7 +1,3 @@
-// =====================================================
-// AddExpenseScreen – AI text parsing + manual entry
-// =====================================================
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -51,7 +47,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen>
     super.dispose();
   }
 
-  // ── Save expense ──────────────────────────────────
+  // ── Save expense 
   Future<void> _save({double? amount, String? category, String? note, String? merchant}) async {
     final uid = FirebaseAuth.instance.currentUser?.uid;
     if (uid == null) return;
@@ -87,7 +83,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen>
     );
   }
 
-  // ── Parse AI text ──────────────────────────────────
+  // Parse AI text
   void _parseAi() {
     if (_aiCtrl.text.trim().isEmpty) return;
     setState(() {
@@ -119,7 +115,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen>
     );
   }
 
-  // ── Manual tab ────────────────────────────────────
+  // ── Manual tab
   Widget _manualTab() {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(20),
@@ -173,7 +169,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen>
     );
   }
 
-  // ── AI parse tab ──────────────────────────────────
+  //AI parse tab 
   Widget _aiTab() {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(20),
@@ -248,7 +244,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen>
   Widget _label(String t) => Text(t, style: const TextStyle(color: AppTheme.textSec, fontSize: 12, fontWeight: FontWeight.w600));
 }
 
-// ── Parsed result card ────────────────────────────────
+// Parsed result card
 
 class _ParsedResultCard extends StatelessWidget {
   final Map<String, dynamic> result;
@@ -285,8 +281,7 @@ class _ParsedResultCard extends StatelessWidget {
   );
 }
 
-// ── Category grid ─────────────────────────────────────
-
+//Category grid
 class _CategoryGrid extends StatelessWidget {
   final String? selected;
   final ValueChanged<String> onSelect;
@@ -329,7 +324,7 @@ class _CategoryGrid extends StatelessWidget {
   }
 }
 
-// ── Date row ──────────────────────────────────────────
+//Date row 
 
 class _DateRow extends StatelessWidget {
   final DateTime date;

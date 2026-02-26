@@ -1,7 +1,3 @@
-// =====================================================
-// AnalyticsScreen – charts + trend analysis
-// =====================================================
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fl_chart/fl_chart.dart';
@@ -69,7 +65,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
   }
 }
 
-// ── Range picker ──────────────────────────────────────
+//Range picker
 
 class _RangePicker extends StatelessWidget {
   final DateTimeRange range;
@@ -103,7 +99,7 @@ class _RangePicker extends StatelessWidget {
   );
 }
 
-// ── Month-over-month summary ─────────────────────────
+// Month-over-month summary
 
 class _MomSummary extends StatelessWidget {
   final double change;
@@ -135,7 +131,7 @@ class _MomSummary extends StatelessWidget {
   }
 }
 
-// ── Category ring (re-uses widget) ───────────────────
+//Category ring
 
 class _CategoryRing extends StatelessWidget {
   final String uid;
@@ -241,7 +237,7 @@ class _TrendBar extends StatelessWidget {
   }
 }
 
-// ── Daily bar within range ────────────────────────────
+//Daily bar within range
 
 class _DailyBar extends StatelessWidget {
   final String uid;

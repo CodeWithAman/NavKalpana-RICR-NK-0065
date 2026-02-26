@@ -1,8 +1,3 @@
-// =====================================================
-// LEDGER – AI Assisted Personal Finance Manager
-// main.dart
-// =====================================================
-
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -49,7 +44,7 @@ class MyApp extends StatelessWidget {
           theme: AppTheme.light,
           home: const _AuthGate(),
           routes: {
-            // '/SplashScreen': (context) => const Splashscreen(),
+            '/SplashScreen': (context) => const Splashscreen(),
             '/Home': (context) => const MainNavigation(),
           },
         ),
@@ -58,7 +53,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
-// Auth gate: shows splash/auth flow until user is authenticated
+// Auth gate
 class _AuthGate extends StatelessWidget {
   const _AuthGate();
 

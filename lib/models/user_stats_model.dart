@@ -1,16 +1,14 @@
-// =====================================================
-// UserStatsModel – computed financial metrics
-// =====================================================
+// UserStatsModel
 
 class UserStatsModel {
   final double monthlyIncome;
   final double monthlyExpense;
   final double monthlyBudget;
-  final double savingsRate;       // % of income saved
-  final double healthScore;       // 0–100
-  final String riskLevel;         // Low / Moderate / High
+  final double savingsRate;      
+  final double healthScore;      
+  final String riskLevel;         
   final String spendingPersonality;
-  final Map<String, double> categoryBreakdown; // category → total spent
+  final Map<String, double> categoryBreakdown;
 
   const UserStatsModel({
     required this.monthlyIncome,
