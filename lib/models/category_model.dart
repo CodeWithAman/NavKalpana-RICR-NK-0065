@@ -1,6 +1,4 @@
-// =====================================================
 // CategoryModel
-// =====================================================
 
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -28,7 +26,7 @@ class CategoryModel {
     );
   }
 
-  // ── Default built-in categories ───────────────────
+  // Default built-in categories
   static List<CategoryModel> get defaults => const [
         CategoryModel(id: 'groceries',    name: 'Groceries',    icon: Icons.shopping_cart,    isDefault: true),
         CategoryModel(id: 'food',         name: 'Food',         icon: Icons.restaurant,       isDefault: true),

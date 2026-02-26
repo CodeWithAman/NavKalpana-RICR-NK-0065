@@ -50,12 +50,12 @@ class _AccessVerificationPageState extends State<AccessVerificationPage>
     super.dispose();
   }
 
-  /// Hash PIN (must match onboarding)
+  // Hash PIN
   String _hashPin(String pin) {
     return sha256.convert(utf8.encode(pin.trim())).toString();
   }
 
-  /// 🔑 BIOMETRIC AUTH — ANDROID SAFE
+  //BIOMETRIC AUTH
   Future<void> _tryBiometricAuth() async {
     if (_isBiometricRunning) return;
 

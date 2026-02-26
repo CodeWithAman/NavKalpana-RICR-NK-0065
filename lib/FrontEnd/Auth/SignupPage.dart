@@ -108,7 +108,7 @@ class _SignupPageState extends State<SignupPage> {
     }
   }
 
-  // ---------------- GOOGLE SIGN-IN ----------------
+  // GOOGLE SIGN-IN
 
   Future<void> signInWithGoogle() async {
     try {
@@ -157,7 +157,7 @@ class _SignupPageState extends State<SignupPage> {
     super.dispose();
   }
 
-  // ---------------- UI ----------------
+  // UI 
 
   @override
   Widget build(BuildContext context) {
@@ -330,7 +330,7 @@ class _SignupPageState extends State<SignupPage> {
                       ),
                       const SizedBox(width: 12),
                       const Text(
-                        "Login with Google",
+                        "Signup with Google",
                         style: TextStyle(
                           fontWeight: FontWeight.w500,
                           color: Colors.black,

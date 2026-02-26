@@ -1,6 +1,4 @@
-// =====================================================
 // GoalsScreen – goal management + auto allocation
-// =====================================================
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -62,14 +60,14 @@ class GoalsScreen extends StatelessWidget {
               _GoalSummaryCard(totalTarget: totalTarget, totalSaved: totalSaved),
               const SizedBox(height: 20),
 
-              // ── Goals list ─────────────────────────
+    
               ...goals.map((g) => GoalProgressCard(
                 goal: g,
                 onAddAmount: () => _showAddAmountSheet(context, g),
                 onDelete: () => context.read<GoalProvider>().deleteGoal(g.id),
               )),
 
-              // ── Auto allocation preview ────────────
+              
               const SizedBox(height: 8),
               _AllocationCard(goals: goals),
             ]),
@@ -201,8 +199,6 @@ class _AllocationCard extends StatelessWidget {
     );
   }
 }
-
-// ── Add goal bottom sheet ─────────────────────────────
 
 class _AddGoalSheet extends StatefulWidget {
   @override

@@ -1,6 +1,3 @@
-// =====================================================
-// LEDGER – Light Fintech Material 3 Theme
-// =====================================================
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -117,7 +114,6 @@ class AppTheme {
   }
 }
 
-// ── Glassmorphism card decorator ────────────────────
 BoxDecoration glassCard({
   Color? color,
   double radius = 20,
