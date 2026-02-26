@@ -1,5 +1,5 @@
 // =====================================================
-// LEDGER – Dark Fintech Material 3 Theme
+// LEDGER – Light Fintech Material 3 Theme
 // =====================================================
 
 import 'package:flutter/material.dart';
@@ -8,34 +8,34 @@ import 'package:google_fonts/google_fonts.dart';
 
 class AppTheme {
   // ── Color Palette ──────────────────────────────────
-  static const Color bg = Color(0xFF0D0E10); // page background
-  static const Color surface = Color(0xFF141517); // card surface
-  static const Color surface2 = Color(0xFF1C1E21); // elevated surface
-  static const Color surface3 = Color(0xFF252729); // input / chip
-  static const Color border = Color(0xFF2C2E31); // subtle borders
+  static const Color bg = Color(0xFFF4F6FA); // page background
+  static const Color surface = Color(0xFFFFFFFF); // card surface
+  static const Color surface2 = Color(0xFFF0F2F8); // elevated surface
+  static const Color surface3 = Color(0xFFE8EBF3); // input / chip
+  static const Color border = Color(0xFFDDE1EC); // subtle borders
   static const Color accent = Color(0xFF6C63FF); // primary accent (purple)
-  static const Color accentAlt = Color(0xFF00D09C); // green accent (savings)
-  static const Color danger = Color(0xFFFF4D6A); // red / overspend
-  static const Color warning = Color(0xFFFFB547); // orange warning
-  static const Color textPri = Color(0xFFF0F2F5); // primary text
-  static const Color textSec = Color(0xFF9CA3AF); // secondary text
-  static const Color textDim = Color(0xFF4B5563); // dimmed label
+  static const Color accentAlt = Color(0xFF00B884); // green accent (savings)
+  static const Color danger = Color(0xFFE8334A); // red / overspend
+  static const Color warning = Color(0xFFF59E0B); // orange warning
+  static const Color textPri = Color(0xFF0F1117); // primary text
+  static const Color textSec = Color(0xFF5C6580); // secondary text
+  static const Color textDim = Color(0xFFADB5CC); // dimmed label
 
-  static ThemeData get dark {
+  static ThemeData get light {
     SystemChrome.setSystemUIOverlayStyle(
       const SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
-        statusBarIconBrightness: Brightness.light,
-        systemNavigationBarColor: bg,
-        systemNavigationBarIconBrightness: Brightness.light,
+        statusBarIconBrightness: Brightness.dark,
+        systemNavigationBarColor: surface,
+        systemNavigationBarIconBrightness: Brightness.dark,
       ),
     );
 
     return ThemeData(
       useMaterial3: true,
-      brightness: Brightness.dark,
+      brightness: Brightness.light,
       scaffoldBackgroundColor: bg,
-      colorScheme: const ColorScheme.dark(
+      colorScheme: const ColorScheme.light(
         primary: accent,
         secondary: accentAlt,
         error: danger,
@@ -45,7 +45,7 @@ class AppTheme {
         onSurface: textPri,
       ),
       textTheme: GoogleFonts.manropeTextTheme(
-        ThemeData.dark().textTheme.apply(
+        ThemeData.light().textTheme.apply(
           bodyColor: textPri,
           displayColor: textPri,
         ),
@@ -86,7 +86,7 @@ class AppTheme {
         ),
       ),
       appBarTheme: const AppBarTheme(
-        backgroundColor: bg,
+        backgroundColor: surface,
         elevation: 0,
         scrolledUnderElevation: 0,
         foregroundColor: textPri,
@@ -105,11 +105,11 @@ class AppTheme {
       dividerTheme: const DividerThemeData(color: border, thickness: 1),
       switchTheme: SwitchThemeData(
         thumbColor: WidgetStateProperty.resolveWith(
-          (s) => s.contains(WidgetState.selected) ? accent : textSec,
+          (s) => s.contains(WidgetState.selected) ? accent : textDim,
         ),
         trackColor: WidgetStateProperty.resolveWith(
           (s) => s.contains(WidgetState.selected)
-              ? accent.withOpacity(0.3)
+              ? accent.withOpacity(0.25)
               : surface3,
         ),
       ),
@@ -123,14 +123,19 @@ BoxDecoration glassCard({
   double radius = 20,
   bool hasBorder = true,
 }) => BoxDecoration(
-  color: color ?? AppTheme.surface.withOpacity(0.85),
+  color: color ?? AppTheme.surface,
   borderRadius: BorderRadius.circular(radius),
   border: hasBorder ? Border.all(color: AppTheme.border, width: 1) : null,
   boxShadow: [
     BoxShadow(
-      color: Colors.black.withOpacity(0.25),
+      color: const Color(0xFF6C63FF).withOpacity(0.06),
       blurRadius: 16,
       offset: const Offset(0, 4),
+    ),
+    BoxShadow(
+      color: Colors.black.withOpacity(0.04),
+      blurRadius: 6,
+      offset: const Offset(0, 1),
     ),
   ],
 );
