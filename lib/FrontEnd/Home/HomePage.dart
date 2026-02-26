@@ -22,236 +22,511 @@ class _HomePageState extends State<HomePage> {
     "INR": "₹",
     "GBP": "£",
     "JPY": "¥",
-    "AUD": r"A$",
-    "CAD": r"CA$",
-    "CHF": "CHF",
-    "CNY": "元",
-    "SGD": r"S$",
-    "AED": "AED",
   };
 
   @override
   Widget build(BuildContext context) {
     final user = FirebaseAuth.instance.currentUser;
-
-    void _navigate(Widget page) {
-      Navigator.of(context).push(
-        PageTransition(
-          type: PageTransitionType.rightToLeft,
-          duration: const Duration(milliseconds: 200),
-          reverseDuration: const Duration(milliseconds: 200),
-          child: page,
-        ),
-      );
-    }
-
-    // ---------------- USER NOT LOGGED IN ----------------
     if (user == null) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
-    // ---------------- USER LOGGED IN ----------------
-    return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+    final now = DateTime.now();
+    final monthId = DateFormat('yyyy-MM').format(now);
+    final todayId = DateFormat('yyyy-MM-dd').format(now);
+    final yesterdayId = DateFormat(
+      'yyyy-MM-dd',
+    ).format(now.subtract(const Duration(days: 1)));
+
+    final dayStart = DateTime(now.year, now.month, now.day);
+    final dayEnd = dayStart.add(const Duration(days: 1));
+
+    return StreamBuilder<DocumentSnapshot>(
       stream: FirebaseFirestore.instance
           .collection('users')
           .doc(user.uid)
           .snapshots(),
-      builder: (context, snapshot) {
-        // ---------- ERROR ----------
-        if (snapshot.hasError) {
-          return Scaffold(
-            body: Center(
-              child: Text(
-                'Error: ${snapshot.error}',
-                style: const TextStyle(color: Colors.red),
-              ),
-            ),
-          );
-        }
-
-        // ---------- LOADING ----------
-        if (!snapshot.hasData || !snapshot.data!.exists) {
+      builder: (context, userSnap) {
+        if (!userSnap.hasData || !userSnap.data!.exists) {
           return const Scaffold(
             body: Center(child: CircularProgressIndicator()),
           );
         }
 
-        // ---------- DATA ----------
-        final data = snapshot.data!.data()!;
+        final userData = userSnap.data!.data() as Map<String, dynamic>;
+        final name = userData['name'] ?? '';
+        final currency = userData['currency'] ?? 'INR';
+        final budget = (userData['monthlyBudget'] ?? 0).toDouble();
+        final symbol = currencySymbolMap[currency] ?? '₹';
 
-        final String name = data['name'] ?? '';
-        final String currency = data['currency'] ?? 'INR';
-        final String currencySymbol = currencySymbolMap[currency] ?? '₹';
-
-        // ---------- UI ----------
         return Scaffold(
-          backgroundColor: const Color(0XFFEDEEF0),
-          body: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 24.w),
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(height: 40.h),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          backgroundColor: const Color(0xFFEDEEF0),
+          body: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20.w),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                      SizedBox(height: 40.h),
+
+                      // ================= HEADER =================
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            "Hello ${capitalizeFirstLetterOfEachWord(name.split(" ").first)}!",
-                            style: TextStyle(
-                              fontSize: 18.sp,
-                              fontWeight: FontWeight.w600,
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Hello ${capitalizeFirstLetterOfEachWord(name.split(" ").first)}!",
+                                style: TextStyle(
+                                  fontSize: 20.sp,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                              Text(
+                                DateFormat('EEE, d MMM').format(now),
+                                style: const TextStyle(color: Colors.black45),
+                              ),
+                            ],
+                          ),
+                          Image.asset(
+                            "assets/icons/notification.png",
+                            height: 24.h,
+                            width: 24.w,
+                          ),
+                        ],
+                      ),
+
+                      SizedBox(height: 20.h),
+
+                      // ================= MONTH + TODAY =================
+                      Row(
+                        children: [
+                          Expanded(
+                            child: _statCard(
+                              title: "This Month",
+                              stream: FirebaseFirestore.instance
+                                  .collection('users')
+                                  .doc(user.uid)
+                                  .collection('analytics')
+                                  .doc(monthId)
+                                  .snapshots(),
+                              field: "totalSpent",
+                              symbol: symbol,
                             ),
                           ),
-                          Text(
-                            DateFormat('EEE, d MMM').format(DateTime.now()),
-                            style: const TextStyle(
-                              color: Colors.black45,
-                              fontWeight: FontWeight.w600,
+                          SizedBox(width: 12.w),
+                          Expanded(
+                            child: _todayComparisonCard(
+                              uid: user.uid,
+                              monthId: monthId,
+                              todayId: todayId,
+                              yesterdayId: yesterdayId,
+                              symbol: symbol,
                             ),
                           ),
                         ],
                       ),
-                      Image.asset(
-                        "assets/icons/notification.png",
-                        height: 28.h,
-                        width: 28.w,
-                      ),
-                    ],
-                  ),
 
-                  SizedBox(height: 16.h),
+                      SizedBox(height: 16.h),
 
-                  // ---------- MONTH SPENDING CARD ----------
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(12.r),
-                        ),
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 20.w,
-                          vertical: 14.h,
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              "Month Spending",
-                              style: TextStyle(
-                                color: Colors.black45,
-                                fontWeight: FontWeight.w600,
+                      // ================= SPENDING WALLET =================
+                      StreamBuilder<DocumentSnapshot>(
+                        stream: FirebaseFirestore.instance
+                            .collection('users')
+                            .doc(user.uid)
+                            .collection('analytics')
+                            .doc(monthId)
+                            .snapshots(),
+                        builder: (context, snap) {
+                          final spent = (snap.hasData && snap.data!.exists)
+                              ? ((snap.data!.data()
+                                            as Map<
+                                              String,
+                                              dynamic
+                                            >)['totalSpent'] ??
+                                        0)
+                                    .toDouble()
+                              : 0.0;
+
+                          final left = (budget - spent).clamp(0, budget);
+
+                          return Container(
+                            padding: EdgeInsets.all(14.h),
+                            decoration: BoxDecoration(
+                              image: const DecorationImage(
+                                image: AssetImage(
+                                  "assets/images/premiumFrame.png",
+                                ),
+                                fit: BoxFit.cover,
                               ),
+                              borderRadius: BorderRadius.circular(18),
                             ),
-                            SizedBox(height: 6.h),
-                            Text(
-                              "$currencySymbol 0.00",
-                              style: TextStyle(
-                                fontSize: 24.sp,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(12.r),
-                        ),
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 20.w,
-                          vertical: 14.h,
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              "Today",
-                              style: TextStyle(
-                                color: Colors.black45,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                            SizedBox(height: 6.h),
-                            Text(
-                              "$currencySymbol 0.00",
-                              style: TextStyle(
-                                fontSize: 24.sp,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 20.h),
-                  Row(
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.of(context).push(
-                            PageTransition(
-                              type: PageTransitionType.rightToLeftJoined,
-                              childCurrent: widget,
-                              duration: const Duration(milliseconds: 120),
-                              reverseDuration: const Duration(
-                                milliseconds: 120,
-                              ),
-                              child: WalletPage(),
+                            child: Row(
+                              children: [
+                                Container(
+                                  height: 40.h,
+                                  width: 40.w,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white.withOpacity(0.2),
+                                    borderRadius: BorderRadius.circular(12.r),
+                                  ),
+                                  child: const Icon(
+                                    Icons.wallet,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                const SizedBox(width: 12),
+                                const Expanded(
+                                  child: Text(
+                                    "Spending Wallet",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                                Text(
+                                  "$symbol${left.toStringAsFixed(2)}",
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+                                const Icon(
+                                  Icons.arrow_forward_ios,
+                                  color: Colors.white,
+                                  size: 14,
+                                ),
+                              ],
                             ),
                           );
                         },
-                        child: Container(
-                          height: 40.h,
-                          width: 40.w,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(12.r),
-                          ),
-                          child: Center(
-                            child: Image.asset(
-                              "assets/icons/transaction.png",
-                              height: 20.h,
-                            ),
-                          ),
-                        ),
                       ),
-                      Container(
-                        height: 40,
-                        width: 220,
-                        decoration: BoxDecoration(
-                          color: Color(0xFF1C1D1F),
-                          borderRadius: BorderRadius.circular(12.r),
-                        ),
-                        child: Center(
-                          child: Text(
-                            "10,000",
-                            style: TextStyle(color: Colors.white),
+
+                      SizedBox(height: 20.h),
+
+                      // ================= ACTIONS =================
+                      Row(
+                        children: [
+                          _actionBtn(
+                            icon: Icons.add,
+                            label: "Add",
+                            onTap: () {
+                              Navigator.of(context).push(
+                                PageTransition(
+                                  type: PageTransitionType.rightToLeft,
+                                  child: const SelectExpenseCategoryPage(),
+                                ),
+                              );
+                            },
                           ),
-                        ),
+                          _actionBtn(
+                            icon: Icons.account_balance_wallet,
+                            label: "Wallet",
+                            onTap: () {
+                              Navigator.of(context).push(
+                                PageTransition(
+                                  type: PageTransitionType.rightToLeft,
+                                  child: const WalletPage(),
+                                ),
+                              );
+                            },
+                          ),
+                        ],
                       ),
+
+                      SizedBox(height: 30.h),
                     ],
                   ),
-                  ElevatedButton(
-                    onPressed: () {
-                      _navigate(SelectExpenseCategoryPage());
-                    },
-                    child: Text("+"),
-                  ),
-                ],
-              ),
+                ),
+
+                // ================= RECENT TRANSACTIONS =================
+                recentTransactions(
+                  uid: user.uid,
+                  currencySymbol: symbol,
+                  dayStart: dayStart,
+                  dayEnd: dayEnd,
+                ),
+              ],
             ),
           ),
         );
       },
     );
   }
+
+  // ================= STAT CARD =================
+
+  Widget _statCard({
+    required String title,
+    required Stream<DocumentSnapshot> stream,
+    required String field,
+    required String symbol,
+  }) {
+    return StreamBuilder<DocumentSnapshot>(
+      stream: stream,
+      builder: (context, snap) {
+        final value = (snap.hasData && snap.data!.exists)
+            ? ((snap.data!.data() as Map<String, dynamic>)[field] ?? 0)
+                  .toDouble()
+            : 0.0;
+
+        return Container(
+          padding: EdgeInsets.symmetric(vertical: 20.h, horizontal: 16.w),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(18.r),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: const TextStyle(
+                  color: Colors.black45,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              SizedBox(height: 8.h),
+              Text(
+                "$symbol${value.toStringAsFixed(2)}",
+                style: TextStyle(fontSize: 22.sp, fontWeight: FontWeight.w600),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  // ================= TODAY COMPARISON (PERCENTAGE) =================
+
+  Widget _todayComparisonCard({
+    required String uid,
+    required String monthId,
+    required String todayId,
+    required String yesterdayId,
+    required String symbol,
+  }) {
+    return StreamBuilder<DocumentSnapshot>(
+      stream: FirebaseFirestore.instance
+          .collection('users')
+          .doc(uid)
+          .collection('analytics')
+          .doc(monthId)
+          .collection('daily')
+          .doc(todayId)
+          .snapshots(),
+      builder: (context, todaySnap) {
+        final todaySpent = (todaySnap.hasData && todaySnap.data!.exists)
+            ? ((todaySnap.data!.data() as Map<String, dynamic>)['spent'] ?? 0)
+                  .toDouble()
+            : 0.0;
+
+        return StreamBuilder<DocumentSnapshot>(
+          stream: FirebaseFirestore.instance
+              .collection('users')
+              .doc(uid)
+              .collection('analytics')
+              .doc(monthId)
+              .collection('daily')
+              .doc(yesterdayId)
+              .snapshots(),
+          builder: (context, ySnap) {
+            final yesterdaySpent = (ySnap.hasData && ySnap.data!.exists)
+                ? ((ySnap.data!.data() as Map<String, dynamic>)['spent'] ?? 0)
+                      .toDouble()
+                : 0.0;
+
+            final hasComparison = yesterdaySpent > 0;
+            final percentChange = hasComparison
+                ? ((todaySpent - yesterdaySpent) / yesterdaySpent) * 100
+                : 0.0;
+
+            final isMore = percentChange > 0;
+
+            return Container(
+              padding: EdgeInsets.symmetric(vertical: 20.h, horizontal: 16.w),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(18.r),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Today",
+                        style: TextStyle(
+                          color: Colors.black45,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      hasComparison
+                          ? Container(
+                              decoration: BoxDecoration(
+                                color: isMore
+                                    ? Colors.orangeAccent.withOpacity(0.2)
+                                    : Colors.greenAccent.withOpacity(0.2),
+                                borderRadius: BorderRadius.circular(12.r),
+                              ),
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(
+                                  vertical: 2.h,
+                                  horizontal: 4.w,
+                                ),
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      isMore
+                                          ? Icons.arrow_upward
+                                          : Icons.arrow_downward,
+                                      size: 16,
+                                      color: isMore
+                                          ? Colors.orangeAccent
+                                          : Colors.greenAccent,
+                                      weight: 100,
+                                    ),
+                                    const SizedBox(width: 4),
+                                    Text(
+                                      "${percentChange.abs().toStringAsFixed(1)}% ",
+                                      style: TextStyle(
+                                        fontSize: 14.sp,
+                                        fontWeight: FontWeight.w800,
+                                        color: isMore
+                                            ? Colors.orangeAccent
+                                            : Colors.greenAccent,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            )
+                          : SizedBox.shrink(),
+                    ],
+                  ),
+                  SizedBox(height: 6.h),
+                  Text(
+                    "$symbol${todaySpent.toStringAsFixed(2)}",
+                    style: TextStyle(
+                      fontSize: 22.sp,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  SizedBox(height: 6.h),
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  // ================= ACTION BUTTON =================
+
+  Widget _actionBtn({
+    required IconData icon,
+    required String label,
+    required VoidCallback onTap,
+  }) {
+    return Expanded(
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          margin: EdgeInsets.only(right: 12.w),
+          padding: const EdgeInsets.all(14),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Column(
+            children: [Icon(icon), const SizedBox(height: 6), Text(label)],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ================= RECENT TRANSACTIONS =================
+
+Widget recentTransactions({
+  required String uid,
+  required String currencySymbol,
+  required DateTime dayStart,
+  required DateTime dayEnd,
+}) {
+  return Container(
+    decoration: BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.only(
+        topLeft: Radius.circular(24.r),
+        topRight: Radius.circular(24.r),
+      ),
+    ),
+    padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          "Recent Transactions",
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
+        ),
+        const SizedBox(height: 12),
+        StreamBuilder<QuerySnapshot>(
+          stream: FirebaseFirestore.instance
+              .collection('users')
+              .doc(uid)
+              .collection('expenses')
+              .where(
+                'date',
+                isGreaterThanOrEqualTo: Timestamp.fromDate(dayStart),
+              )
+              .where('date', isLessThan: Timestamp.fromDate(dayEnd))
+              .orderBy('date', descending: true)
+              .limit(6)
+              .snapshots(),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+              return const Text(
+                "No transactions today",
+                style: TextStyle(color: Colors.black45),
+              );
+            }
+
+            return Column(
+              children: snapshot.data!.docs.map((doc) {
+                final d = doc.data() as Map<String, dynamic>;
+                return ListTile(
+                  leading: const CircleAvatar(
+                    backgroundColor: Colors.black,
+                    child: Icon(Icons.receipt_long, color: Colors.white),
+                  ),
+                  title: Text(d['categoryName'] ?? 'Expense'),
+                  subtitle: (d['note'] ?? "").toString().isNotEmpty
+                      ? Text(d['note'])
+                      : null,
+                  trailing: Text(
+                    "-$currencySymbol${d['amount']}",
+                    style: const TextStyle(fontWeight: FontWeight.w700),
+                  ),
+                );
+              }).toList(),
+            );
+          },
+        ),
+      ],
+    ),
+  );
 }
