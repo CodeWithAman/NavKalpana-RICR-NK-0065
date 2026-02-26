@@ -1,5 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:ledger/FrontEnd/Extras/CommonFunctions.dart';
 
 class AccountPage extends StatefulWidget {
   const AccountPage({super.key});
@@ -9,6 +12,42 @@ class AccountPage extends StatefulWidget {
 }
 
 class _AccountPageState extends State<AccountPage> {
+  bool isFetching = false;
+
+  String profilePicture = '';
+  String name = '';
+  String email = '';
+
+  Future<void> loadUserData() async {
+    setState(() {
+      isFetching = true;
+    });
+
+    try {
+      DocumentSnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore
+          .instance
+          .collection('users')
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .get();
+
+      if (snapshot.exists) {
+        setState(() {
+          // U S E R   D A T A
+          profilePicture = snapshot.data()?['profilePicture'] ?? '';
+          name = snapshot.data()?['name'] ?? '';
+          email = snapshot.data()?['email'] ?? '';
+
+          // E X T R A S
+          isFetching = false;
+        });
+      } else {
+        if (mounted) userNotFound(context);
+      }
+    } catch (e) {
+      if (mounted) userNotFound(context);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,8 +71,8 @@ class _AccountPageState extends State<AccountPage> {
                   vertical: 8.h,
                 ),
                 leading: Container(
-                  height: 56.h,
-                  width: 56.w,
+                  height: 49.h,
+                  width: 49.w,
                   decoration: BoxDecoration(
                     color: Colors.white,
                     shape: BoxShape.circle,
@@ -44,14 +83,14 @@ class _AccountPageState extends State<AccountPage> {
                   ),
                 ),
                 title: Text(
-                  "Aman Verma",
+                  name,
                   style: TextStyle(
                     fontSize: 16.sp,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
                 subtitle: Text(
-                  "amanverma0912@gmail.com",
+                  email,
                   style: TextStyle(fontSize: 13.sp, color: Colors.black45),
                 ),
                 trailing: Container(
@@ -93,8 +132,8 @@ class _AccountPageState extends State<AccountPage> {
                   vertical: 4.h,
                 ),
                 leading: Container(
-                  height: 56.h,
-                  width: 56.w,
+                  height: 49.h,
+                  width: 49.w,
                   decoration: BoxDecoration(
                     border: Border.all(color: Colors.white54, width: 1.5.w),
                     shape: BoxShape.circle,
@@ -103,8 +142,8 @@ class _AccountPageState extends State<AccountPage> {
                   child: Center(
                     child: Image.asset(
                       "assets/icons/crown.png",
-                      height: 32.h,
-                      width: 32.w,
+                      height: 28.h,
+                      width: 28.w,
                       color: Colors.white,
                       fit: BoxFit.cover,
                     ),
