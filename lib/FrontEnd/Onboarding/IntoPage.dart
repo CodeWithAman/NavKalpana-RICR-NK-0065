@@ -8,7 +8,7 @@ void main() {
 }
 
 class LedgerApp extends StatelessWidget {
-  const LedgerApp({Key? key}) : super(key: key);
+  const LedgerApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +25,7 @@ class LedgerApp extends StatelessWidget {
 }
 
 class IntroPage extends StatefulWidget {
-  const IntroPage({Key? key}) : super(key: key);
+  const IntroPage({super.key});
 
   @override
   State<IntroPage> createState() => _IntroPageState();
