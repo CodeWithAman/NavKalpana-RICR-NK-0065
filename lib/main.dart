@@ -46,7 +46,7 @@ class MyApp extends StatelessWidget {
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
           title: 'LEDGER',
-          theme: AppTheme.dark,
+          theme: AppTheme.light,
           home: const _AuthGate(),
           routes: {
             // '/SplashScreen': (context) => const Splashscreen(),
