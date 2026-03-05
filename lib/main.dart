@@ -5,16 +5,13 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:ledger/firebase_options.dart';
 
-// Theme
 import 'theme/app_theme.dart';
 
-// Providers
 import 'providers/expense_provider.dart';
 import 'providers/budget_provider.dart';
 import 'providers/goal_provider.dart';
 import 'providers/analytics_provider.dart';
 
-// Screens
 import 'screens/main_navigation.dart';
 import 'FrontEnd/Auth/SplashScreen.dart';
 
@@ -40,7 +37,7 @@ class MyApp extends StatelessWidget {
         ],
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
-          title: 'LEDGER',
+          title: 'Ledger',
           theme: AppTheme.light,
           home: const _AuthGate(),
           routes: {
